@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/tailwindcss@^2.0/dist/tailwind.min.css" rel="stylesheet">
+    <link href="output.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>WeatherSnap</title>
+</head>
+<body style="background-color: #1c2533">
+    <main style="color: #ffffff" class="my-10">
+        <div class="flex flex-col justify-center max-w-sm m-auto">
+
+            <div class=" flex justify-center gap-2 items-center mb-4">
+                <h1 class="text-2xl font-bold">WeatherSnap</h1>
+                <img class="w-6 h-6" src="./imagens/sun.png" alt="Icon Sun">
+            </div>
+            
+            <div id="inicio-comparar" class="flex mb-5 justify-between">
+                <div id="inicio" style="background-color: #606671" class="flex flew-col items-center py-2 px-3 gap-2">
+                    <i class="fa-solid fa-house" style="color: #ffffff"></i>
+                    <p>Início</p>
+                </div>
+                <div id="comparar" class="flex items-center gap-2">
+                    <i class="fa-solid fa-chart-simple"></i>
+                    <p>Comparar</p>
+                    <p style="color: #3f6deb" class= "text-xs font-bold w-5 h-5 rounded-full bg-white flex items-center justify-center hidden"></p>
+                </div>
+            </div>
+            
+            <div id="buscar" style="background-color: #474e59;" class="flex justify-between pl-3">
+                <div class="flex gap-2 items-center py-2">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Buscar cidade..." style="background-color: #474e59" class=" outline-none">
+            </div>
+            <button style="background-color: #606671" class="py-2 px-4">Buscar</button>
+        </div>
+
+        <div id="info-api" style="background-color: #474e59" class="rounded-lg p-5 hidden">
+            <div id="info-local" class="flex justify-between">
+                <div id="div-local" class="flex flex-col">
+                    <h2 id="local" class="text-lg font-bold"></h2>
+                    <p id="data" class="text-xs"></p>
+                </div>
+                <div id="compartilhar-and-status" class="flex gap-2">
+                    <div class="flex items-center justify-center w-8 h-8 rounded-full" style="background-color: #606671;">
+                        <i class="fa-solid fa-chart-simple text-white"></i>
+                    </div>
+                    
+                    <div class="flex items-center justify-center w-8 h-8 rounded-full" style="background-color: #606671;">
+                        <i class="fa-solid fa-share-nodes text-white"></i>
+                    </div>    
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+    </main>
+    
+</body>
+</html>
