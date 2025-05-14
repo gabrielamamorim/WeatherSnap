@@ -19,7 +19,7 @@ en">
             </div>
             
             <div id="inicio-comparar" class="flex mb-5 justify-between">
-                <div id="inicio" style="background-color: #606671" class="flex flew-col items-center py-2 px-3 gap-2">
+                <div id="inicio" style="background-color: #606671" class="flex flex-row items-center py-2 px-3 gap-2">
                     <i class="fa-solid fa-house" style="color: #ffffff"></i>
                     <p>Início</p>
                 </div>
@@ -39,7 +39,7 @@ en">
         </div>
 
         <div id="info-api" style="background-color: #474e59" class="rounded-lg p-5">
-            <div id="info-local" class="flex justify-between">
+            <div id="info-local" class="flex justify-between mb-5">
                 <div id="div-local" class="flex flex-col">
                     <h2 id="local" class="text-lg font-bold"></h2>
                     <p id="data" class="text-xs"></p>
@@ -55,15 +55,15 @@ en">
                 </div>
             </div>
             
-            <div class="flex justify-center">
-                <p id="icone-clima-atual"></p>
-                <p id="temperatura-atual"></p>
-            </div>
-
-            <p id="condicao"></p>
-            
-            <div>
-                <p id="mensagem" class="text-white"></p>
+            <div class="flex flex-col items-center w-full max-w-md mx-auto">
+                <div class="flex gap-3 items-center mb-5">
+                    <p id="icone-clima-atual" class="flex text-4xl"></p>
+                    <p id="temperatura-atual" class="flex text-4xl font-bold"></p>
+                </div>
+                <p id="condicao" class="font-semibold text-md"></p>
+                <div>
+                    <p id="mensagem" style="background-color: #606671;" class="text-white text-sm font-semibold max-w-md"></p>
+                </div>
             </div>
 
             <h5 class="font-bold mb-3">Próximos dias</h5>

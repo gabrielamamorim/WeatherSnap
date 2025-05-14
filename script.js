@@ -18,6 +18,7 @@ async function buscarCidade(cidade) {
     }
 }
 
+
 async function buscarPrevisao(latitude, longitude) {
     try {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=temperature_2m_max,temperature_2m_min,weathercode&current_weather=true&timezone=auto`;
@@ -110,12 +111,24 @@ async function buscar() {
     await atualizarInterface(dados);
 }
 
+async function limparInput() {
+    document.getElementById('input-cidade').value = '';
+}
+
+const sobreposicao = document.getElementById('info-api');
+
 const botaoBuscar = document.getElementById('botao-buscar');
-botaoBuscar.addEventListener('click', buscar);
+botaoBuscar.addEventListener('click', () => {
+    buscar();
+    sobreposicao.classList.remove('hidden');
+    limparInput();
+});
 
 const inputCidade = document.getElementById('input-cidade');
 inputCidade.addEventListener('keypress', (e) => {
     if(e.key === 'Enter') {
         buscar();
+        sobreposicao.classList.remove('hidden');
+        limparInput();
     }
 })
