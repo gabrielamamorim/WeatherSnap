@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="
-en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,80 +9,102 @@ en">
     <title>WeatherSnap</title>
 </head>
 
-<body style="background-color: #1c2533">
+<body class="min-h-screen transition-all duration-500">
     <main style="color: #ffffff" class="my-10">
-        <div class="flex flex-col justify-center w-full max-w-md px-4 mx-auto">
+        <div class="flex flex-col justify-center w-full max-w-sm px-4 mx-auto">
 
             <div class=" flex justify-center gap-3 items-center mb-4">
-                <h1 class="text-3xl font-bold">WeatherSnap</h1>
+                <h1 class="text-2xl font-bold">WeatherSnap</h1>
                 <img class="w-6 h-6" src="./imagens/sun.png" alt="Icon Sun">
             </div>
-            
+
             <div id="inicio-comparar" class="flex mb-5 justify-between">
-                <div id="inicio" style="background-color: #606671" class="flex flex-row items-center py-2 px-3 gap-2">
-                    <i class="fa-solid fa-house" style="color: #ffffff"></i>
-                    <p>Início</p>
+                <div id="inicio" style="background-color: #606671" class="flex flex-row items-center py-1.5 px-3 gap-2">
+                    <i class="fa-solid fa-house text-xs" style="color: #ffffff"></i>
+                    <p class="font-semibold text-sm">Início</p>
                 </div>
-                <div id="comparar" class="flex items-center gap-2 mr-4">
-                    <i class="fa-solid fa-chart-simple"></i>
-                    <p>Comparar</p>
-                    <p id="comparar" style="color: #3f6deb" class= "text-xs font-bold w-5 h-5 rounded-full bg-white flex items-center justify-center hidden"></p>
+                <div class="flex items-center gap-2 mr-4">
+                    <i class="fa-solid fa-chart-simple text-xs"></i>
+                    <p class="font-semibold text-sm">Comparar</p>
+                    <p id="comparar" style="color: #3f6deb" class="text-xs font-bold w-5 h-5 rounded-full bg-white flex items-center justify-center hidden">
+                    </p>
                 </div>
             </div>
-            
+
             <div style="background-color: #474e59;" class="flex justify-between pl-3">
                 <div class="flex gap-2 items-center py-2">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                <input id="input-cidade" type="text" placeholder="Buscar cidade..." style="background-color: #474e59" class=" outline-none">
-            </div>
-            <button id="botao-buscar" style="background-color: #606671" class="py-2 px-4">Buscar</button>
-        </div>
-
-        <div id="info-api" style="background-color: #474e59" class="rounded-lg p-5">
-            <div id="info-local" class="flex justify-between mb-5">
-                <div id="div-local" class="flex flex-col">
-                    <h2 id="local" class="text-lg font-bold"></h2>
-                    <p id="data" class="text-xs"></p>
+                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    <input id="input-cidade" type="text" placeholder="Buscar cidade..." style="background-color: #474e59" class="outline-none text-sm font-semibold">
                 </div>
-                <div id="compartilhar-and-status" class="flex gap-2">
-                    <div class="flex items-center justify-center w-8 h-8 rounded-full" style="background-color: #606671;">
-                        <i class="fa-solid fa-chart-simple text-white"></i>
+                <button id="botao-buscar" style="background-color: #606671" class="py-2 px-4 text-sm font-semibold">Buscar</button>
+            </div>
+
+            <div id="info-api" style="background-color: #474e59" class="rounded-lg p-5 hidden">
+                <div id="info-local" class="flex justify-between mb-5">
+                    <div id="div-local" class="flex flex-col">
+                        <h2 id="local" class="text-lg font-bold"></h2>
+                        <p id="data-0" style="color: #c1c3c8;" class="text-sm font-semibold"></p>
                     </div>
-                    
-                    <div class="flex items-center justify-center w-8 h-8 rounded-full" style="background-color: #606671;">
-                        <i class="fa-solid fa-share-nodes text-white"></i>
-                    </div>    
-                </div>
-            </div>
-            
-            <div class="flex flex-col items-center w-full max-w-md mx-auto">
-                <div class="flex gap-3 items-center mb-5">
-                    <p id="icone-clima-atual" class="flex text-4xl"></p>
-                    <p id="temperatura-atual" class="flex text-4xl font-bold"></p>
-                </div>
-                <p id="condicao" class="font-semibold text-md"></p>
-                <div>
-                    <p id="mensagem" style="background-color: #606671;" class="text-white text-sm font-semibold max-w-md"></p>
-                </div>
-            </div>
+                    <div id="compartilhar-and-status" class="flex gap-2">
+                        <div class="flex items-center justify-center w-8 h-8 rounded-full" style="background-color: #606671;">
+                            <i class="fa-solid fa-chart-simple text-white text-sm"></i>
+                        </div>
 
-            <h5 class="font-bold mb-3">Próximos dias</h5>
-            <div id="proximos-dias" class="flex gap-2">
-                <div style="background-color: #606671" class="w-32 h-24 flex justify-center">
-                    <p id="icone-dia-0"></p>
+                        <div class="flex items-center justify-center w-8 h-8 rounded-full" style="background-color: #606671;">
+                            <i class="fa-solid fa-share-nodes text-white text-sm"></i>
+                        </div>
+                    </div>
                 </div>
-                <div style="background-color: #606671" class="w-32 h-24 flex justify-center">
-                    <p id="icone-dia-1"></p>
+
+                <div class="flex flex-col items-center w-full max-w-md mx-auto mb-5">
+                    <div class="flex gap-2 items-center mb-5">
+                        <p id="icone-clima-atual" class="flex text-4xl"></p>
+                        <p id="temperatura-atual" class="flex text-4xl font-bold"></p>
+                    </div>
+
+                    <p id="condicao" class="font-bold text-sm mb-2"></p>
+
+                    <div style="color: #bec1c4;" class="flex flex-row items-center gap-4 font-bold text-sm mb-5">
+                        <div class="flex items-center gap-1">
+                            <i class="fa-solid fa-wind text-xs"></i>
+                            <p id="vento"></p>
+                        </div>
+
+                        <div class="flex items-center gap-1">
+                            <i class="fa-solid fa-droplet text-xs"></i>
+                            <p id="umidade"></p>
+                        </div>
+                    </div>
+
+                    <div style="background-color: #606671;" class="flex w-full justify-center py-3 px-6">
+                        <p id="mensagem" style="color: #d6d8db;" class="text-white text-sm font-bold items-center text-center"></p>
+                    </div>
                 </div>
-                <div style="background-color: #606671" class="w-32 h-24 flex justify-center">
-                    <p id="icone-dia-2"></p>
+
+                <h5 style="color: #dedfe0;" class="font-bold mb-3 text-xs">Próximos dias</h5>
+                
+                <div id="proximos-dias" class="flex gap-2">
+                    <div style="background-color: #606671" class="w-32 h-20 flex flex-col justify-center items-center gap-1">
+                        <p id="dia-1" class="text-xs font-semibold"></p>
+                        <p id="icone-dia-1"></p>
+                        <p id="temperatura-dia-1" class="font-semibold text-xs"></p>
+                    </div>
+                    <div style="background-color: #606671" class="w-32 h-20 flex flex-col justify-center items-center gap-1">
+                        <p id="dia-2" class="text-xs font-semibold"></p>
+                        <p id="icone-dia-2"></p>
+                        <p id="temperatura-dia-2" class="font-semibold text-xs"></p>
+                    </div>
+                    <div style="background-color: #606671" class="w-32 h-20 flex flex-col justify-center items-center gap-1">
+                        <p id="dia-3" class="text-xs font-semibold"></p>
+                        <p id="icone-dia-3"></p>
+                        <p id="temperatura-dia-3" class="font-semibold text-xs"></p>
+                    </div>
                 </div>
+
             </div>
-            
-            
         </div>
-    </div>
-</main>
-<script src="script.js"></script>
+    </main>
+    <script src="script.js"></script>
 </body>
+
 </html>

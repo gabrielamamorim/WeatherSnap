@@ -3,14 +3,16 @@ async function buscarCidade(cidade) {
 
         const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cidade)}&count=1`;
         const resposta = await fetch(url);
-        if(!resposta.ok) throw new Error("Cidade não encontrada.");
+        if (!resposta.ok) throw new Error("Cidade não encontrada.");
 
         const dados = await resposta.json();
         const resultado = dados.results?.[0];
-        
+
         return {
             latitude: resultado.latitude,
-            longitude: resultado.longitude
+            longitude: resultado.longitude,
+            cidade: resultado.name,
+            pais: resultado.country
         }
 
     } catch (erro) {
@@ -18,20 +20,30 @@ async function buscarCidade(cidade) {
     }
 }
 
-
 async function buscarPrevisao(latitude, longitude) {
     try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=temperature_2m_max,temperature_2m_min,weathercode&current_weather=true&timezone=auto`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=temperature_2m_max,temperature_2m_min,weathercode&current_weather=true&hourly=relative_humidity_2m,windspeed_10m&timezone=auto`;
 
         const resposta = await fetch(url);
-        if(!resposta.ok) throw new Error("Erro ao obter previsão");
-        
+        if (!resposta.ok) throw new Error("Erro ao obter previsão");
+
         const dados = await resposta.json();
+
+        const horaISO = new Date().toISOString().slice(0, 13);
+
+        const indiceHoraAtual = dados.hourly.time.findIndex(hora => hora.startsWith(horaISO));
+
+        const umidadeAtual = dados.hourly.relative_humidity_2m[indiceHoraAtual];
+        const ventoAtual = dados.hourly.windspeed_10m[indiceHoraAtual];
 
         return {
             temperaturaAtual: dados.current_weather.temperature,
             climaAtual: dados.current_weather.weathercode,
-            previsaoProximosDias: dados.daily.weathercode.slice(0,3)
+            previsaoProximosDias: dados.daily.weathercode.slice(1, 4),
+            dias: dados.daily.time.slice(1, 4),
+            maximas: dados.daily.temperature_2m_max.slice(1, 4),
+            umidade: umidadeAtual,
+            vento: ventoAtual
         }
 
     } catch (erro) {
@@ -40,15 +52,27 @@ async function buscarPrevisao(latitude, longitude) {
 
 }
 
-async function atualizarInterface(dados) {
+async function atualizarInterface(dados, cidade, pais) {
 
-    const {temperaturaAtual, climaAtual, previsaoProximosDias} = dados;
+    const { temperaturaAtual, climaAtual, previsaoProximosDias, dias, maximas, umidade, vento } = dados;
+
+    // data atual
+    const dataAtual = formatarData(new Date());
+    document.getElementById('data-0').textContent = dataAtual;
+
+    // local
+    document.getElementById('local').textContent = `${cidade}, ${pais}`;
 
     const clima = previsaoProximosDias.map(code => convertendoWeatherCode(code));
     console.log("Condição climática próximos 3 dias: ", clima);
 
     clima.forEach((dia, index) => {
-        document.getElementById(`icone-dia-${index}`).textContent = dia.icone;
+        const data = new Date(dias[index]);
+        const diaSemana = data.toLocaleDateString('pt-BR', { weekday: 'short' });
+
+        document.getElementById(`icone-dia-${index + 1}`).textContent = dia.icone;
+        document.getElementById(`dia-${index + 1}`).textContent = diaSemana;
+        document.getElementById(`temperatura-dia-${index + 1}`).textContent = `${Math.round(maximas[index]) + '°C'}`;
     });
 
     // clima atual
@@ -62,10 +86,20 @@ async function atualizarInterface(dados) {
 
     // mensagem do clima atual
     document.getElementById('mensagem').textContent = climaAtualConvertido.mensagem;
-    
+
     // condicao atual
     document.getElementById('condicao').textContent = climaAtualConvertido.condicao;
-    
+
+    // vento atual
+    document.getElementById('vento').textContent = vento + ' Km/h';
+
+    // umidade atual
+    document.getElementById('umidade').textContent = umidade + '%';
+
+    const horaAtual = new Date().getHours();
+    const temaClima = climaParaTema(climaAtual);
+    aplicarTema(temaClima, horaAtual);
+
 }
 
 function convertendoWeatherCode(codigo) {
@@ -93,22 +127,22 @@ function convertendoWeatherCode(codigo) {
         99: { condicao: "Tempestade com granizo forte", icone: "⛈️❄️", mensagem: "Fique em segurança e acompanhe o clima." }
     };
 
-    return codigos[codigo] || {condicao: "Condição desconhecida", icone: "❓", mensagem: "Clima misterioso - esteja preparado para tudo!"};
+    return codigos[codigo] || { condicao: "Condição desconhecida", icone: "❓", mensagem: "Clima misterioso - esteja preparado para tudo!" };
 }
 
 async function buscar() {
     const input = document.getElementById('input-cidade');
     const cidade = input.value.trim();
-    
-    if(!cidade) return;
-    
+
+    if (!cidade) return;
+
     const coordenadas = await buscarCidade(cidade);
-    if(!coordenadas) return;
-    
+    if (!coordenadas) return;
+
     const dados = await buscarPrevisao(coordenadas.latitude, coordenadas.longitude);
-    if(!dados) return;
-    
-    await atualizarInterface(dados);
+    if (!dados) return;
+
+    await atualizarInterface(dados, coordenadas.cidade, coordenadas.pais);
 }
 
 async function limparInput() {
@@ -126,9 +160,75 @@ botaoBuscar.addEventListener('click', () => {
 
 const inputCidade = document.getElementById('input-cidade');
 inputCidade.addEventListener('keypress', (e) => {
-    if(e.key === 'Enter') {
+    if (e.key === 'Enter') {
         buscar();
         sobreposicao.classList.remove('hidden');
         limparInput();
     }
 })
+
+function formatarData(dataString) {
+    const data = new Date(dataString);
+
+    const opcoes = {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long'
+    };
+
+    let dataFormatada = data.toLocaleDateString('pt-BR', opcoes);
+
+    // Coloca cada palavra com a primeira letra maiúscula
+    dataFormatada = dataFormatada.split(' ').map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1)).join(' ');
+
+    return dataFormatada;
+}
+
+function aplicarTema(clima, horaAtual) {
+    const body = document.body;
+    body.classList.remove(
+        'bg-dia', 'bg-noite',
+        'bg-dia-ensolarado', 'bg-dia-nublado', 'bg-dia-chuvoso',
+        'bg-noite-nublado', 'bg-noite-chuvoso', 'bg-noite-temporal'
+    );
+
+    const isDia = horaAtual >= 6 && horaAtual < 18;
+
+    if (isDia) {
+        switch (clima) {
+            case 'ensolarado':
+                body.classList.add('bg-dia-ensolarado');
+                break;
+            case 'nublado':
+                body.classList.add('bg-dia-nublado');
+                break;
+            case 'chuvoso':
+                body.classList.add('bg-dia-chuvoso');
+                break;
+            default:
+                body.classList.add('bg-dia');
+        }
+    } else {
+        switch (clima) {
+            case 'nublado':
+                body.classList.add('bg-noite-nublado');
+                break;
+            case 'chuvoso':
+                body.classList.add('bg-noite-chuvoso');
+                break;
+            case 'temporal':
+                body.classList.add('bg-noite-temporal');
+                break;
+            default:
+                body.classList.add('bg-noite');
+        }
+    }
+}
+
+function climaParaTema(codigo) {
+    if ([0, 1, 2].includes(codigo)) return 'ensolarado';       // Céu limpo, poucas nuvens, parcialmente nublado -> ensolarado
+    if ([3, 45, 48].includes(codigo)) return 'nublado';        // Nublado, névoa -> nublado
+    if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(codigo)) return 'chuvoso'; // chuvisco, chuva, pancadas
+    if ([95, 96, 99].includes(codigo)) return 'temporal';      // tempestades
+    return 'ensolarado';  // fallback padrão
+}
